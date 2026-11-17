@@ -1,0 +1,78 @@
+{
+  "expo": {
+    "name": "Family Office",
+    "slug": "family-office",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.family.office",
+      "infoPlist": {
+        "NSCameraUsageDescription": "証書・書類の写真を撮影するために使います",
+        "NSPhotoLibraryUsageDescription": "証書・書類の画像を選択するために使います"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.family.office",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "証書・書類の画像を選択するために使います",
+          "cameraPermission": "証書・書類の写真を撮影するために使います"
+        }
+      ],
+      "@react-native-voice/voice"
+    ],
+    "scheme": "familyoffice",
+    "extra": {
+      "eas": {
+        "projectId": "e8b81f3c-b453-4627-b240-687241749813"
+      },
+      "router": {
+        "origin": false
+      }
+    },
+    "owner": "sugarsaltmoon",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e8b81f3c-b453-4627-b240-687241749813"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "name": "Family Office",
+      "shortName": "FamilyOffice",
+      "themeColor": "#4F8EF7",
+      "backgroundColor": "#F7F8FC",
+      "favicon": "./assets/favicon.png",
+      "lang": "ja"
+    },
+    "experiments": {
+      "baseUrl": "/family-office"
+    }
+  }
+}
