@@ -7,6 +7,13 @@ import { Colors, Radius, Spacing } from '@/lib/theme'
 
 const MENU_ITEMS = [
   {
+    label: 'ダッシュボード',
+    desc: '部屋のモニタ用(天気・ごみの日・予定・買い物)',
+    icon: 'tv-outline' as const,
+    onPress: () => router.push('/dashboard' as any),
+    color: '#0EA5E9',
+  },
+  {
     label: 'AIの記憶',
     desc: '覚えておいてほしいことを管理',
     icon: 'brain-outline' as const,

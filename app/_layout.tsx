@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Platform } from 'react-native'
-import { Stack, router, useSegments } from 'expo-router'
+import { Stack, router, useSegments, usePathname } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import * as SplashScreen from 'expo-splash-screen'
 import * as Notifications from 'expo-notifications'
@@ -14,6 +14,8 @@ import { WebAlertHost } from '@/components/WebAlertHost'
 
 // Web版: ログインしないと何も見えない。匿名ログイン・世帯作成・世帯IDだけでの自動再参加はしない
 const IS_WEB = Platform.OS === 'web'
+// Web: ログイン前に開こうとしたページ(例: /dashboard)を覚えておき、ログイン後にそこへ戻す
+let pendingPath: string | null = null
 
 SplashScreen.preventAutoHideAsync()
 
@@ -34,6 +36,7 @@ export default function RootLayout() {
   const rejoining = useRef(false)
   const segments = useSegments()
   const firstSegment = segments[0] as string | undefined
+  const pathname = usePathname()
 
   // Anonymous Auth: セッションがなければ自動でサインイン（二重呼び出し防止）
   useEffect(() => {
@@ -103,7 +106,10 @@ export default function RootLayout() {
   useEffect(() => {
     if (!IS_WEB || loading || householdLoading) return
     if (!session) {
-      if (firstSegment !== '(auth)') router.replace('/(auth)/login')
+      if (firstSegment !== '(auth)') {
+        if (pathname && pathname !== '/' && firstSegment !== 'join' && firstSegment !== 'setup') pendingPath = pathname
+        router.replace('/(auth)/login')
+      }
       return
     }
     if (!household) {
@@ -112,7 +118,9 @@ export default function RootLayout() {
     }
     // ログイン済み+世帯あり: ログイン画面・参加画面・トップにいるときだけホームへ(リロードしたページはそのまま)
     if (!firstSegment || firstSegment === '(auth)' || firstSegment === 'join' || firstSegment === 'setup') {
-      router.replace('/(main)/')
+      const next = pendingPath
+      pendingPath = null
+      router.replace((next ?? '/(main)/') as any)
     }
   }, [session, loading, household, householdLoading, firstSegment])
 
