@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { Stack, router, useSegments, usePathname } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
@@ -11,11 +11,14 @@ import { AuthContext } from '@/lib/AuthContext'
 import { setAuthStore } from '@/lib/authStore'
 import { writeAuthCache, readDeviceHid, writeDeviceHid } from '@/lib/authCache'
 import { WebAlertHost } from '@/components/WebAlertHost'
+import { loadViewMode, getViewMode, homePath } from '@/lib/viewMode'
 
 // Web版: ログインしないと何も見えない。匿名ログイン・世帯作成・世帯IDだけでの自動再参加はしない
 const IS_WEB = Platform.OS === 'web'
 // Web: ログイン前に開こうとしたページ(例: /dashboard)を覚えておき、ログイン後にそこへ戻す
 let pendingPath: string | null = null
+// Web: 開いた直後の振り分けを済ませたか
+let webStarted = false
 
 SplashScreen.preventAutoHideAsync()
 
@@ -37,6 +40,9 @@ export default function RootLayout() {
   const segments = useSegments()
   const firstSegment = segments[0] as string | undefined
   const pathname = usePathname()
+  // 表示モード(アプリ / ダッシュボード)を読み終えてから最初の画面を決める
+  const [modeReady, setModeReady] = useState(false)
+  useEffect(() => { loadViewMode().finally(() => setModeReady(true)) }, [])
 
   // Anonymous Auth: セッションがなければ自動でサインイン（二重呼び出し防止）
   useEffect(() => {
@@ -54,12 +60,13 @@ export default function RootLayout() {
   }, [loading, householdLoading])
 
   useEffect(() => {
-    if (loading || householdLoading) return
+    if (loading || householdLoading || !modeReady) return
 
     if (IS_WEB) return
 
     if (household) {
-      router.replace('/(main)/')
+      // 前回ダッシュボードモードで終えていたら、ダッシュボードから始める
+      router.replace(homePath() as any)
       return
     }
 
@@ -100,11 +107,11 @@ export default function RootLayout() {
       rejoining.current = false
       router.replace('/setup')
     })
-  }, [session, loading, household, householdLoading])
+  }, [session, loading, household, householdLoading, modeReady])
 
   // Web版の振り分け: 未ログイン→ログイン画面、世帯なし→招待コード入力、それ以外はそのページのまま
   useEffect(() => {
-    if (!IS_WEB || loading || householdLoading) return
+    if (!IS_WEB || loading || householdLoading || !modeReady) return
     if (!session) {
       if (firstSegment !== '(auth)') {
         if (pathname && pathname !== '/' && firstSegment !== 'join' && firstSegment !== 'setup') pendingPath = pathname
@@ -116,13 +123,22 @@ export default function RootLayout() {
       if (firstSegment !== 'join') router.replace('/join')
       return
     }
-    // ログイン済み+世帯あり: ログイン画面・参加画面・トップにいるときだけホームへ(リロードしたページはそのまま)
+    // 開いた直後だけ: トップ(/ = アプリのホーム)を開いたとき、前回がダッシュボードモードならダッシュボードへ。
+    // そのあとアプリ内でホームへ移動したときは、ホームをそのまま見せる
+    if (!webStarted) {
+      webStarted = true
+      if (pathname === '/' && !pendingPath && getViewMode() === 'dashboard') {
+        router.replace('/dashboard' as any)
+        return
+      }
+    }
+    // ログイン済み+世帯あり: ログイン画面・参加画面にいるときだけ、そのモードの最初の画面へ(リロードしたページはそのまま)
     if (!firstSegment || firstSegment === '(auth)' || firstSegment === 'join' || firstSegment === 'setup') {
       const next = pendingPath
       pendingPath = null
-      router.replace((next ?? '/(main)/') as any)
+      router.replace((next ?? homePath()) as any)
     }
-  }, [session, loading, household, householdLoading, firstSegment])
+  }, [session, loading, household, householdLoading, firstSegment, modeReady])
 
   // グローバルストアとネイティブキャッシュに書き込み（世帯が正常に見つかった場合）
   useEffect(() => {

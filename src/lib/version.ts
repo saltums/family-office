@@ -1,5 +1,5 @@
-export const APP_VERSION = '0.9.89'
-export const RELEASE_DATE = '2026-11-05'
+export const APP_VERSION = '0.9.90'
+export const RELEASE_DATE = '2026-11-18'
 
 export interface ChangelogEntry {
   version: string
@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '0.9.90',
+    date: '2026-11-18',
+    time: '',
+    changes: [
+      'ダッシュボードモードを追加：ホームのボタンで「アプリ / ダッシュボード」を切り替え（天気・ごみの日・予定・TODO・買い物を1画面で）',
+      '切り替えたモードは端末ごとに覚えていて、次に開いたときも同じモードで始まります',
+    ],
+  },
   {
     version: '0.9.89',
     date: '2026-11-05',

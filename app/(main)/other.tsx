@@ -4,13 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { Colors, Radius, Spacing } from '@/lib/theme'
+import { useSwitchViewMode } from '@/components/ModeSwitch'
 
 const MENU_ITEMS = [
   {
     label: 'ダッシュボード',
     desc: '部屋のモニタ用(天気・ごみの日・予定・買い物)',
     icon: 'tv-outline' as const,
-    onPress: () => router.push('/dashboard' as any),
+    onPress: null, // ダッシュボードモードへ切り替え(下の OtherScreen で処理)
     color: '#0EA5E9',
   },
   {
@@ -37,6 +38,7 @@ const MENU_ITEMS = [
 ]
 
 export default function OtherScreen() {
+  const switchMode = useSwitchViewMode()
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.header}>
@@ -48,7 +50,7 @@ export default function OtherScreen() {
           <TouchableOpacity
             key={item.label}
             style={styles.row}
-            onPress={item.onPress}
+            onPress={item.onPress ?? (() => switchMode('dashboard'))}
             activeOpacity={0.7}
           >
             <View style={[styles.icon, { backgroundColor: item.color + '18' }]}>

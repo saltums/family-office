@@ -6,6 +6,7 @@ import { router } from 'expo-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useHousehold } from '@/hooks/useHousehold'
 import { Colors, Radius, Spacing } from '@/lib/theme'
+import { ModeSwitch } from '@/components/ModeSwitch'
 
 interface MenuItem {
   icon: keyof typeof Ionicons.glyphMap
@@ -33,13 +34,16 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.appName}>Family Office</Text>
-          {household?.name && (
-            <View style={styles.householdBadge}>
-              <Ionicons name="home-outline" size={13} color={Colors.textMuted} />
-              <Text style={styles.householdName}>{household.name}</Text>
-            </View>
-          )}
+          <View>
+            <Text style={styles.appName}>Family Office</Text>
+            {household?.name && (
+              <View style={styles.householdBadge}>
+                <Ionicons name="home-outline" size={13} color={Colors.textMuted} />
+                <Text style={styles.householdName}>{household.name}</Text>
+              </View>
+            )}
+          </View>
+          <ModeSwitch current="app" />
         </View>
 
         <Text style={styles.sectionLabel}>メニュー</Text>
@@ -67,7 +71,11 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg },
   container: { padding: Spacing.md, paddingBottom: 80 },
-  header: { marginBottom: Spacing.xl },
+  // 幅が足りないスマホでは、切り替えボタンが2行目に回る
+  header: {
+    marginBottom: Spacing.xl, flexDirection: 'row', flexWrap: 'wrap',
+    alignItems: 'center', justifyContent: 'space-between', gap: 12,
+  },
   appName: { fontSize: 28, fontWeight: '900', color: Colors.text, letterSpacing: -0.5 },
   householdBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
   householdName: { fontSize: 13, color: Colors.textMuted, fontWeight: '500' },

@@ -5,8 +5,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { View, Text, StyleSheet, Pressable, ScrollView, Alert, Platform, useWindowDimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { supabase } from '@/lib/supabase'
 import { useAuthContext } from '@/lib/AuthContext'
+import { ModeSwitch } from '@/components/ModeSwitch'
+import { setViewMode } from '@/lib/viewMode'
 
 const WD = ['日', '月', '火', '水', '木', '金', '土']
 const MUNI: Record<string, string> = { '23213': '西尾市' }
@@ -110,6 +114,7 @@ export default function DashboardScreen() {
   const { household } = useAuthContext()
   const hid = household?.id ?? null
   const { width } = useWindowDimensions()
+  const insets = useSafeAreaInsets()
   const wide = width >= 900
   const [now, setNow] = useState(new Date())
   const dark = now.getHours() >= 19 || now.getHours() < 6
@@ -129,9 +134,16 @@ export default function DashboardScreen() {
   // 時計
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 15000); return () => clearInterval(t) }, [])
 
-  // 画面を消さない(対応ブラウザのみ)
+  // この画面を開いたら、この端末はダッシュボードモード(URLを直接開いたときも同じ)
+  useEffect(() => { setViewMode('dashboard') }, [])
+
+  // 画面を消さない(スマホアプリ: この画面を開いている間だけ / Web: 対応ブラウザのみ)
   useEffect(() => {
-    if (Platform.OS !== 'web') return
+    if (Platform.OS !== 'web') {
+      let KA: any = null
+      try { KA = require('expo-keep-awake'); KA.activateKeepAwakeAsync('dashboard').catch(() => {}) } catch {}
+      return () => { try { KA?.deactivateKeepAwake('dashboard')?.catch?.(() => {}) } catch {} }
+    }
     let lock: any = null
     const req = async () => { try { lock = await (navigator as any).wakeLock?.request('screen') } catch {} }
     req()
@@ -156,7 +168,7 @@ export default function DashboardScreen() {
       supabase.from('family_members').select('name, birthday').eq('household_id', hid),
       supabase.from('shopping_items').select('id, name, quantity, checked').eq('household_id', hid).eq('checked', false).order('created_at'),
       supabase.from('documents').select('id', { count: 'exact', head: true }).eq('household_id', hid).eq('status', 'needs_review'),
-      supabase.from('pcloud_files').select('id', { count: 'exact', head: true }).eq('household_id', hid).eq('ocr_status', 'error'),
+      supabase.from('pcloud_files').select('pcloud_id', { count: 'exact', head: true }).eq('household_id', hid).eq('ocr_status', 'error'),
     ])
 
     if (homeR.data) { setHome(homeR.data as Home); homeRef.current = homeR.data as Home }
@@ -284,7 +296,11 @@ export default function DashboardScreen() {
   const todayW = weather?.days[0]
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: c.bg }} contentContainerStyle={s.page}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: c.bg }}
+      contentContainerStyle={[s.page, { paddingTop: 14 + insets.top, paddingBottom: 14 + insets.bottom }]}
+    >
+      <StatusBar style={dark ? 'light' : 'dark'} />
       {/* 上段: 時計・天気・ごみ */}
       <View style={s.row}>
         <View style={[s.card, s.clockCard]}>
@@ -295,9 +311,9 @@ export default function DashboardScreen() {
           <View style={s.metaRow}>
             <Text style={s.meta}>{updatedAt ? `${updatedAt.getHours()}:${String(updatedAt.getMinutes()).padStart(2, '0')} 更新` : '読み込み中…'}</Text>
             <Pressable onPress={load} hitSlop={8}><Ionicons name="refresh" size={16} color={c.sub} /></Pressable>
-            <Pressable onPress={() => router.replace('/(main)/')} hitSlop={8} style={{ marginLeft: 'auto' }}>
-              <Text style={s.link}>アプリへ</Text>
-            </Pressable>
+          </View>
+          <View style={{ marginTop: 12 }}>
+            <ModeSwitch current="dashboard" palette={{ bg: c.chip, border: c.border, active: c.accent, text: c.sub }} />
           </View>
         </View>
 
