@@ -122,8 +122,8 @@ async function placeLabel(lat: number, lon: number): Promise<{ label: string; mu
 // ---------- 色(夜は暗く) ----------
 function palette(dark: boolean) {
   return dark
-    ? { bg: '#0F172A', card: '#1E293B', text: '#F1F5F9', sub: '#94A3B8', border: '#334155', accent: '#60A5FA', danger: '#F87171', warn: '#FBBF24', ok: '#34D399', chip: '#334155' }
-    : { bg: '#EEF1F7', card: '#FFFFFF', text: '#111827', sub: '#6B7280', border: '#E5E7EB', accent: '#3B82F6', danger: '#DC2626', warn: '#B45309', ok: '#059669', chip: '#F3F4F6' }
+    ? { bg: '#0F172A', card: '#1E293B', text: '#F1F5F9', sub: '#94A3B8', border: '#334155', accent: '#60A5FA', danger: '#F87171', warn: '#FBBF24', ok: '#34D399', chip: '#334155', dangerBg: '#3B2026' }
+    : { bg: '#EEF1F7', card: '#FFFFFF', text: '#111827', sub: '#6B7280', border: '#E5E7EB', accent: '#3B82F6', danger: '#DC2626', warn: '#B45309', ok: '#059669', chip: '#F3F4F6', dangerBg: '#FEF2F2' }
 }
 
 export default function DashboardScreen() {
@@ -142,8 +142,9 @@ export default function DashboardScreen() {
   const [events, setEvents] = useState<Ev[]>([])
   const [todos, setTodos] = useState<{ id: string; name: string; expiration_date: string | null }[]>([])
   const [shopping, setShopping] = useState<{ id: string; name: string; quantity: number }[]>([])
-  const [expiring, setExpiring] = useState<{ id: string; name: string; expiration_date: string; category: string }[]>([])
-  const [docs, setDocs] = useState({ review: 0, error: 0 })
+  // 期限が近いもの: 管理の項目(60日以内)と書類の期限(30日以内)をまとめて並べる
+  const [expiring, setExpiring] = useState<{ key: string; name: string; date: string; from: 'record' | 'document' }[]>([])
+  const [ocrErrors, setOcrErrors] = useState(0) // 書類の読み取り失敗(0のときは何も出さない)
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null)
   const homeRef = useRef<Home | null>(null)
 
@@ -173,6 +174,7 @@ export default function DashboardScreen() {
     if (!hid) return
     const today = ymd(new Date())
     const in7 = ymd(addDays(new Date(), 7))
+    const in30 = ymd(addDays(new Date(), 30))
     const in60 = ymd(addDays(new Date(), 60))
     const [homeR, gR, calR, recR, famR, shopR, docR, errR] = await Promise.all([
       supabase.from('household_home').select('lat, lon, label, muni_code').eq('household_id', hid).maybeSingle(),
@@ -183,7 +185,8 @@ export default function DashboardScreen() {
         .eq('household_id', hid).eq('completed', false),
       supabase.from('family_members').select('name, birthday').eq('household_id', hid),
       supabase.from('shopping_items').select('id, name, quantity, checked').eq('household_id', hid).eq('checked', false).order('created_at'),
-      supabase.from('documents').select('id', { count: 'exact', head: true }).eq('household_id', hid).eq('status', 'needs_review'),
+      supabase.from('documents').select('id, title, doc_type, due_date, expires_on').eq('household_id', hid)
+        .or(`due_date.gte.${today},expires_on.gte.${today}`).limit(200),
       supabase.from('pcloud_files').select('pcloud_id', { count: 'exact', head: true }).eq('household_id', hid).eq('ocr_status', 'error'),
     ])
 
@@ -217,10 +220,15 @@ export default function DashboardScreen() {
 
     setTodos(recs.filter(r => r.category === 'タスク')
       .sort((a, b) => (a.expiration_date ?? '9999').localeCompare(b.expiration_date ?? '9999')))
-    setExpiring(recs.filter(r => r.category !== 'タスク' && r.expiration_date && r.expiration_date >= today && r.expiration_date <= in60)
-      .sort((a, b) => a.expiration_date.localeCompare(b.expiration_date)))
+    // 書類の期限は「支払期限(なければ有効期限)」が今日〜30日後のもの(書類の画面と同じ数え方)
+    const recDue = recs.filter(r => r.category !== 'タスク' && r.expiration_date && r.expiration_date >= today && r.expiration_date <= in60)
+      .map(r => ({ key: `r-${r.id}`, name: r.name as string, date: r.expiration_date as string, from: 'record' as const }))
+    const docDue = ((docR.data ?? []) as any[])
+      .map(d => ({ key: `d-${d.id}`, name: (d.title ?? d.doc_type ?? '書類') as string, date: (d.due_date ?? d.expires_on) as string, from: 'document' as const }))
+      .filter(d => d.date && d.date >= today && d.date <= in30)
+    setExpiring([...recDue, ...docDue].sort((a, b) => a.date.localeCompare(b.date)))
     setShopping((shopR.data ?? []) as any)
-    setDocs({ review: docR.count ?? 0, error: errR.count ?? 0 })
+    setOcrErrors(errR.count ?? 0)
     setUpdatedAt(new Date())
   }, [hid])
 
@@ -342,6 +350,12 @@ export default function DashboardScreen() {
             <Text style={s.meta}>{updatedAt ? `${updatedAt.getHours()}:${String(updatedAt.getMinutes()).padStart(2, '0')} 更新` : '読み込み中…'}</Text>
             <Pressable onPress={load} hitSlop={8}><Ionicons name="refresh" size={16} color={c.sub} /></Pressable>
           </View>
+          {ocrErrors > 0 && (
+            <Pressable onPress={() => router.push('/(main)/documents' as any)} style={s.alertChip}>
+              <Ionicons name="alert-circle" size={16} color={c.danger} />
+              <Text style={s.alertText}>書類の読み取り失敗 {ocrErrors}件</Text>
+            </Pressable>
+          )}
           <View style={{ marginTop: 12 }}>
             <ModeSwitch current="dashboard" palette={{ bg: c.chip, border: c.border, active: '#3B82F6', text: c.sub }} />
           </View>
@@ -459,14 +473,17 @@ export default function DashboardScreen() {
             })
           ), undefined, () => router.push('/(main)/todo' as any))}
 
-          {card('期限が近いもの(60日以内)', 'alarm-outline', (
+          {card('期限が近いもの', 'alarm-outline', (
             expiring.length === 0 ? <Text style={s.sub}>ありません</Text> :
-            expiring.slice(0, 5).map(r => {
-              const left = daysBetween(today, r.expiration_date)
+            expiring.slice(0, 6).map(r => {
+              const left = daysBetween(today, r.date)
               return (
-                <View key={r.id} style={s.item}>
+                <View key={r.key} style={s.item}>
                   <Text style={s.itemText} numberOfLines={1}>{r.name}</Text>
-                  <Text style={[s.time, left <= 14 && { color: c.danger, fontWeight: '700' }]}>あと{left}日</Text>
+                  {r.from === 'document' && <Text style={s.tag}>書類</Text>}
+                  <Text style={[s.time, { minWidth: 52, textAlign: 'right' }, left <= 14 && { color: c.danger, fontWeight: '700' }]}>
+                    {left === 0 ? '今日' : `あと${left}日`}
+                  </Text>
                 </View>
               )
             })
@@ -484,13 +501,6 @@ export default function DashboardScreen() {
               ))}
             </View>
           ), undefined, () => router.push('/(main)/shopping' as any))}
-
-          {card('書類', 'document-text-outline', (
-            <View style={{ flexDirection: 'row', gap: 24 }}>
-              <View><Text style={s.num}>{docs.review}</Text><Text style={s.sub}>確認待ち</Text></View>
-              <View><Text style={[s.num, docs.error > 0 && { color: c.danger }]}>{docs.error}</Text><Text style={s.sub}>読み取り失敗</Text></View>
-            </View>
-          ), undefined, () => router.push('/(main)/documents' as any))}
         </View>
       </View>
     </ScrollView>
@@ -538,6 +548,7 @@ function makeStyles(c: ReturnType<typeof palette>, wide: boolean) {
     chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
     chip: { borderWidth: 1, borderColor: c.border, backgroundColor: c.chip, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8 },
     chipText: { color: c.text, fontSize: 17 },
-    num: { color: c.text, fontSize: 34, fontWeight: '700' },
+    alertChip: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', marginTop: 10, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: c.danger, backgroundColor: c.dangerBg },
+    alertText: { color: c.danger, fontSize: 13, fontWeight: '700' },
   })
 }

@@ -1,4 +1,4 @@
-export const APP_VERSION = '0.9.92'
+export const APP_VERSION = '0.9.93'
 export const RELEASE_DATE = '2026-11-22'
 
 export interface ChangelogEntry {
@@ -9,6 +9,15 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '0.9.93',
+    date: '2026-11-22',
+    time: '',
+    changes: [
+      'ダッシュボード：書類のカードをやめました。書類の読み取りに失敗したものがあるときだけ、時計の下に赤い印を出します（押すと書類の画面）',
+      'ダッシュボード：書類の期限（支払期限・有効期限）が30日以内のものを「期限が近いもの」に表示',
+    ],
+  },
   {
     version: '0.9.92',
     date: '2026-11-22',
