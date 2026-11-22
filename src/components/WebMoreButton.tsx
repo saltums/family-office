@@ -2,6 +2,7 @@
 import React from 'react'
 import { Platform, Pressable, StyleProp, ViewStyle } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { Colors } from '@/lib/theme'
 
 export function WebMoreButton({ onPress, style }: { onPress: () => void; style?: StyleProp<ViewStyle> }) {
   if (Platform.OS !== 'web') return null
@@ -12,7 +13,7 @@ export function WebMoreButton({ onPress, style }: { onPress: () => void; style?:
       hitSlop={8}
       style={({ hovered }: any) => [
         { padding: 6, borderRadius: 8, marginLeft: 4, alignSelf: 'center' },
-        hovered && { backgroundColor: '#F3F4F6' },
+        hovered && { backgroundColor: Colors.surface },
         style,
       ]}
     >

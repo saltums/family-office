@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/hooks/useAuthStore'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { WebMoreButton } from '@/components/WebMoreButton'
 
 const CATEGORIES = [
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: Colors.border,
     backgroundColor: Colors.bg,
   },
-  catChipSelected: { borderColor: Colors.primary, backgroundColor: Colors.primary + '15' },
+  catChipSelected: { borderColor: Colors.primary, backgroundColor: tint(Colors.primary, '15') },
   catChipFilter: { borderColor: Colors.primary, backgroundColor: Colors.primary },
   catChipLabelFilter: { color: '#fff' },
   catChipEmoji: { fontSize: 14 },

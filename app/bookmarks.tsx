@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/hooks/useAuthStore'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { WebMoreButton } from '@/components/WebMoreButton'
 
 interface Bookmark {
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: Radius.md,
-    backgroundColor: Colors.primary + '18',
+    backgroundColor: tint(Colors.primary, '18'),
     alignItems: 'center',
     justifyContent: 'center',
   },

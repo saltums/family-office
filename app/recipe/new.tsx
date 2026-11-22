@@ -9,7 +9,7 @@ import { router } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { getAuthStore } from '@/lib/authStore'
 import { RECIPE_CATEGORIES, RECIPE_CATEGORY_COLORS, RecipeCategory } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type InputMode = 'url' | 'text'
 
@@ -96,7 +96,7 @@ export default function NewRecipeScreen() {
                 return (
                   <TouchableOpacity
                     key={cat}
-                    style={[styles.chip, active && { backgroundColor: color + '22', borderColor: color }]}
+                    style={[styles.chip, active && { backgroundColor: tint(color, '22'), borderColor: color }]}
                     onPress={() => setCategory(cat)}
                   >
                     <Text style={[styles.chipText, active && { color }]}>{cat}</Text>

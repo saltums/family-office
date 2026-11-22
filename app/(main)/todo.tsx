@@ -19,7 +19,7 @@ import {
   ExpirationRecord, TaskType, TASK_TYPES, TASK_TYPE_COLORS, TASK_TYPE_ICONS,
   daysUntilExpiration, expirationLabel, CATEGORY_COLORS,
 } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type ListItem = ExpirationRecord & { _type: 'task' | 'expiring' }
 type Filter = 'すべて' | TaskType
@@ -155,7 +155,7 @@ export default function TodoScreen() {
                 <View style={styles.cardTitleRow}>
                   <Text style={styles.cardName} numberOfLines={1}>{item.name}</Text>
                   {isTask && item.task_type && (
-                    <View style={[styles.typeBadge, { backgroundColor: typeColor + '20' }]}>
+                    <View style={[styles.typeBadge, { backgroundColor: tint(typeColor, '20') }]}>
                       <Ionicons name={typeIcon as any} size={11} color={typeColor} />
                       <Text style={[styles.typeBadgeText, { color: typeColor }]}>{item.task_type}</Text>
                     </View>

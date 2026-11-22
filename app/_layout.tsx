@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native'
 import { Platform } from 'react-native'
 import { Stack, router, useSegments, usePathname } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
@@ -12,6 +13,7 @@ import { setAuthStore } from '@/lib/authStore'
 import { writeAuthCache, readDeviceHid, writeDeviceHid } from '@/lib/authCache'
 import { WebAlertHost } from '@/components/WebAlertHost'
 import { loadViewMode, getViewMode, homePath } from '@/lib/viewMode'
+import { isDarkTime } from '@/lib/theme'
 
 // Web版: ログインしないと何も見えない。匿名ログイン・世帯作成・世帯IDだけでの自動再参加はしない
 const IS_WEB = Platform.OS === 'web'
@@ -19,6 +21,13 @@ const IS_WEB = Platform.OS === 'web'
 let pendingPath: string | null = null
 // Web: 開いた直後の振り分けを済ませたか
 let webStarted = false
+
+// Web: 22:00〜6:00 はダークモード。画面の色は theme.ts の CSS変数で切り替わるが、
+// 画面の上のバーなど React Navigation が描く部分には、ここでダーク用のテーマを渡す
+const NAV_DARK = {
+  ...DarkTheme,
+  colors: { ...DarkTheme.colors, primary: '#4F8EF7', background: '#0F172A', card: '#1E293B', text: '#F1F5F9', border: '#334155', notification: '#F87171' },
+}
 
 SplashScreen.preventAutoHideAsync()
 
@@ -40,6 +49,12 @@ export default function RootLayout() {
   const segments = useSegments()
   const firstSegment = segments[0] as string | undefined
   const pathname = usePathname()
+  const [dark, setDark] = useState(() => IS_WEB && isDarkTime())
+  useEffect(() => {
+    if (!IS_WEB) return
+    const t = setInterval(() => setDark(isDarkTime()), 30 * 1000)
+    return () => clearInterval(t)
+  }, [])
   // 表示モード(アプリ / ダッシュボード)を読み終えてから最初の画面を決める
   const [modeReady, setModeReady] = useState(false)
   useEffect(() => { loadViewMode().finally(() => setModeReady(true)) }, [])
@@ -155,6 +170,7 @@ export default function RootLayout() {
   }, [userId])
 
   return (
+    <ThemeProvider value={dark ? NAV_DARK : DefaultTheme}>
     <AuthContext.Provider value={{ userId: userId ?? null, household }}>
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }}>
@@ -174,6 +190,7 @@ export default function RootLayout() {
       </Stack>
       <WebAlertHost />
     </AuthContext.Provider>
+    </ThemeProvider>
   )
 }
 

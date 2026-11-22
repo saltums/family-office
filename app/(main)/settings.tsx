@@ -21,7 +21,7 @@ import { router } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { useHousehold } from '@/hooks/useHousehold'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { InviteCode } from '@/lib/types'
 import { APP_VERSION, RELEASE_DATE, CHANGELOG, ChangelogEntry } from '@/lib/version'
 
@@ -339,7 +339,7 @@ export default function SettingsScreen() {
                   <Text style={styles.backendValue}>{item.value}</Text>
                 </View>
                 {item.badge && (
-                  <View style={[styles.freeBadge, { backgroundColor: item.badgeColor + '22' }]}>
+                  <View style={[styles.freeBadge, { backgroundColor: tint(item.badgeColor, '22') }]}>
                     <Text style={[styles.freeBadgeText, { color: item.badgeColor! }]}>{item.badge}</Text>
                   </View>
                 )}
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   section: { marginBottom: Spacing.lg },
   sectionTitle: { fontSize: 13, fontWeight: '700', color: Colors.textMuted, marginBottom: 8, letterSpacing: 0.5, textTransform: 'uppercase' },
   navRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 4 },
-  navRowIcon: { width: 32, height: 32, borderRadius: 8, backgroundColor: Colors.primary + '15', alignItems: 'center', justifyContent: 'center' },
+  navRowIcon: { width: 32, height: 32, borderRadius: 8, backgroundColor: tint(Colors.primary, '15'), alignItems: 'center', justifyContent: 'center' },
   navRowLabel: { fontSize: 15, fontWeight: '600', color: Colors.text },
   navRowSub: { fontSize: 12, color: Colors.textMuted, marginTop: 1 },
   card: { backgroundColor: Colors.card, borderRadius: Radius.lg, padding: Spacing.md, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2 },
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   signOutText: { color: Colors.danger, fontSize: 15, fontWeight: '600' },
   // バックエンド情報
   backendRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 },
-  backendIconWrap: { width: 28, height: 28, borderRadius: 8, backgroundColor: Colors.primary + '15', alignItems: 'center', justifyContent: 'center' },
+  backendIconWrap: { width: 28, height: 28, borderRadius: 8, backgroundColor: tint(Colors.primary, '15'), alignItems: 'center', justifyContent: 'center' },
   backendLabel: { fontSize: 11, fontWeight: '700', color: Colors.textMuted, textTransform: 'uppercase', letterSpacing: 0.3 },
   backendValue: { fontSize: 13, color: Colors.text, fontWeight: '500', marginTop: 1 },
   freeBadge: { borderRadius: Radius.full, paddingHorizontal: 8, paddingVertical: 3 },

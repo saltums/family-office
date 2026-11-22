@@ -9,7 +9,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { getAuthStore } from '@/lib/authStore'
 import { PasswordEntry } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 function parseMemo(memo: string | null): Record<string, string> {
   try { if (memo && memo.startsWith('{')) return JSON.parse(memo) } catch {}
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   },
   siteIcon: {
     width: 40, height: 40, borderRadius: Radius.md,
-    backgroundColor: Colors.primary + '18', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: tint(Colors.primary, '18'), alignItems: 'center', justifyContent: 'center',
   },
   siteName: { fontSize: 17, fontWeight: '700', color: Colors.text },
   siteUrl: { fontSize: 12, color: Colors.textMuted, marginTop: 2 },
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   pwRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   memoText: { fontSize: 15, color: Colors.text, lineHeight: 22 },
   ownerBadge: {
-    backgroundColor: Colors.primary + '22', borderRadius: Radius.full,
+    backgroundColor: tint(Colors.primary, '22'), borderRadius: Radius.full,
     paddingHorizontal: 10, paddingVertical: 4,
   },
   ownerBadgeText: { fontSize: 12, fontWeight: '700', color: Colors.primary },

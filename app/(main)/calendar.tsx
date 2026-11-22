@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/hooks/useAuthStore'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type EventType = 'todo' | 'expiry' | 'birthday' | 'knowledge_event'
 
@@ -295,7 +295,7 @@ export default function CalendarScreen() {
               <ScrollView showsVerticalScrollIndicator={false}>
                 {selectedEvents.map((item, i) => (
                   <View key={`${item.id}-${i}`} style={styles.eventRow}>
-                    <View style={[styles.eventTag, { backgroundColor: EVENT_COLORS[item.type] + '20' }]}>
+                    <View style={[styles.eventTag, { backgroundColor: tint(EVENT_COLORS[item.type], '20') }]}>
                       <View style={[styles.eventTagDot, { backgroundColor: EVENT_COLORS[item.type] }]} />
                       <Text style={[styles.eventTagText, { color: EVENT_COLORS[item.type] }]}>
                         {EVENT_TYPE_LABELS[item.type]}
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     borderRightWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.border,
   },
-  cellSelected: { backgroundColor: Colors.primary + '12' },
+  cellSelected: { backgroundColor: tint(Colors.primary, '12') },
   dayCircle: {
     width: 32,
     height: 32,
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.primary + '18',
+    backgroundColor: tint(Colors.primary, '18'),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 7, borderRadius: Radius.full,
     borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.card,
   },
-  roleChipActive: { borderColor: Colors.primary, backgroundColor: Colors.primary + '18' },
+  roleChipActive: { borderColor: Colors.primary, backgroundColor: tint(Colors.primary, '18') },
   roleChipText: { fontSize: 14, fontWeight: '600', color: Colors.textMuted },
   roleChipTextActive: { color: Colors.primary },
   addBtn: {

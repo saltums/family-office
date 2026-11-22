@@ -10,10 +10,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { supabase } from '@/lib/supabase'
 import { useAuthContext } from '@/lib/AuthContext'
 import { ModeSwitch } from '@/components/ModeSwitch'
+import { isDarkTime } from '@/lib/theme'
+import { useAutoUpdate } from '@/lib/autoUpdate'
 import { setViewMode } from '@/lib/viewMode'
 
 const WD = ['日', '月', '火', '水', '木', '金', '土']
 const MUNI: Record<string, string> = { '23213': '西尾市' }
+// 自動更新の間隔: 予定・TODO・買い物などは5分ごと、天気は30分ごと(新しい版の確認は src/lib/autoUpdate.ts で10分ごと)
+const DATA_REFRESH_MS = 5 * 60 * 1000
+const WEATHER_REFRESH_MS = 30 * 60 * 1000
 
 type GarbageRule = { name: string; weekdays: number[]; nth?: number[] | null }
 type GarbageSchedule = { area: string; rules: GarbageRule[]; closed_ranges: { from: string; to: string }[]; put_out_by: string | null }
@@ -117,7 +122,7 @@ export default function DashboardScreen() {
   const insets = useSafeAreaInsets()
   const wide = width >= 900
   const [now, setNow] = useState(new Date())
-  const dark = now.getHours() >= 19 || now.getHours() < 6
+  const dark = isDarkTime(now) // 22:00〜6:00(アプリ全体のダークモードと同じ時間帯)
   const c = palette(dark)
 
   const [home, setHome] = useState<Home | null>(null)
@@ -210,9 +215,23 @@ export default function DashboardScreen() {
 
   useEffect(() => {
     load()
-    const t = setInterval(load, 2 * 60 * 1000)
+    const t = setInterval(load, DATA_REFRESH_MS)
     return () => clearInterval(t)
   }, [load])
+
+  // スリープから戻った・ネットが復帰したときは、次の定期更新を待たずにすぐ更新する
+  useEffect(() => {
+    if (Platform.OS !== 'web') return
+    let last = Date.now()
+    const refresh = () => { if (Date.now() - last > 60 * 1000) { last = Date.now(); load() } }
+    const onVis = () => { if (document.visibilityState === 'visible') refresh() }
+    document.addEventListener('visibilitychange', onVis)
+    window.addEventListener('online', refresh)
+    return () => { document.removeEventListener('visibilitychange', onVis); window.removeEventListener('online', refresh) }
+  }, [load])
+
+  // 新しい版が公開されたら自動で読み込み直す(Web のみ)
+  useAutoUpdate()
 
   // 現在地で天気の場所を更新(大きく動いたときだけ保存)
   useEffect(() => {
@@ -237,7 +256,7 @@ export default function DashboardScreen() {
     let alive = true
     const run = () => fetchWeather(home).then(w => { if (alive) setWeather(w) }).catch(() => {})
     run()
-    const t = setInterval(run, 30 * 60 * 1000)
+    const t = setInterval(run, WEATHER_REFRESH_MS)
     return () => { alive = false; clearInterval(t) }
   }, [home?.lat, home?.lon])
 
@@ -313,7 +332,7 @@ export default function DashboardScreen() {
             <Pressable onPress={load} hitSlop={8}><Ionicons name="refresh" size={16} color={c.sub} /></Pressable>
           </View>
           <View style={{ marginTop: 12 }}>
-            <ModeSwitch current="dashboard" palette={{ bg: c.chip, border: c.border, active: c.accent, text: c.sub }} />
+            <ModeSwitch current="dashboard" palette={{ bg: c.chip, border: c.border, active: '#3B82F6', text: c.sub }} />
           </View>
         </View>
 

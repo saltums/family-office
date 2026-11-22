@@ -10,7 +10,7 @@ import { Clipboard } from 'react-native'
 import { supabase } from '@/lib/supabase'
 import { getAuthStore } from '@/lib/authStore'
 import { Card } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 function parseCardMemo(memo: string | null): Record<string, string> {
   try { if (memo && memo.startsWith('{')) return JSON.parse(memo) } catch {}
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
   ownerChipText: { fontSize: 14, fontWeight: '600', color: Colors.textMuted },
   ownerChipTextActive: { color: '#fff' },
   ownerBadge: {
-    backgroundColor: Colors.primary + '20', borderRadius: Radius.full,
+    backgroundColor: tint(Colors.primary, '20'), borderRadius: Radius.full,
     paddingHorizontal: 10, paddingVertical: 3,
   },
   ownerBadgeText: { fontSize: 12, fontWeight: '700', color: Colors.primary },

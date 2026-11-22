@@ -42,7 +42,7 @@ export default function MainLayout() {
           tabBarActiveTintColor: Colors.primary,
           tabBarInactiveTintColor: Colors.textMuted,
           tabBarStyle: {
-            backgroundColor: '#fff',
+            backgroundColor: Colors.card,
             borderTopColor: Colors.border,
             paddingBottom: 4,
           },

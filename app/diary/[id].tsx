@@ -20,7 +20,7 @@ import { supabase } from '@/lib/supabase'
 import { appendImageFile } from '@/lib/formFile'
 import { useAuthStore } from '@/hooks/useAuthStore'
 import { DiaryEntry, PhotoEntry } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type DiaryLink = { url: string; title: string }
 
@@ -446,9 +446,9 @@ const styles = StyleSheet.create({
   photo: { width: 80, height: 80, borderRadius: Radius.md, overflow: 'hidden' },
   photoPlaceholder: { backgroundColor: Colors.border, alignItems: 'center', justifyContent: 'center' },
   addPhoto: {
-    backgroundColor: Colors.primary + '12',
+    backgroundColor: tint(Colors.primary, '12'),
     borderWidth: 1.5,
-    borderColor: Colors.primary + '44',
+    borderColor: tint(Colors.primary, '44'),
     borderStyle: 'dashed',
     alignItems: 'center',
     justifyContent: 'center',
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
   tag: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: Colors.primary + '18', borderRadius: Radius.full,
+    backgroundColor: tint(Colors.primary, '18'), borderRadius: Radius.full,
     paddingHorizontal: 12, paddingVertical: 5,
   },
   tagText: { fontSize: 13, color: Colors.primary, fontWeight: '600' },

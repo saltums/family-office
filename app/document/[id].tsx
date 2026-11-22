@@ -196,7 +196,7 @@ export default function DocumentDetailScreen() {
           <Text style={styles.headerTitle}>{doc.title ?? '(タイトル不明)'}</Text>
           {doc.counterparty && <Text style={styles.headerSub}>{doc.counterparty}</Text>}
           {dueDateStr && daysLeft != null && (
-            <View style={[styles.deadlineBadge, { backgroundColor: daysLeft <= 7 ? '#FEF2F2' : '#FFFBEB' }]}>
+            <View style={[styles.deadlineBadge, { backgroundColor: daysLeft <= 7 ? Colors.dangerLight : Colors.warningLight }]}>
               <Ionicons name="time-outline" size={13} color={daysLeft <= 7 ? '#EF4444' : '#F59E0B'} />
               <Text style={[styles.deadlineText, { color: daysLeft <= 7 ? '#EF4444' : '#F59E0B' }]}>
                 {daysLeft <= 0 ? '期限が来ています' : `${daysLeft}日後 (${fmtDate(dueDateStr)})`}
@@ -346,7 +346,7 @@ const fieldStyles = StyleSheet.create({
   label: { fontSize: 12, fontWeight: '700', color: Colors.textMuted, width: 60, paddingTop: 2 },
   valueWrap: { flex: 1, gap: 2 },
   value: { fontSize: 14, color: Colors.text, fontWeight: '500' },
-  valueWarn: { color: '#B45309' },
+  valueWarn: { color: Colors.warningText },
   warnNote: { fontSize: 11, color: '#F59E0B' },
 })
 
@@ -362,10 +362,10 @@ const styles = StyleSheet.create({
   container: { padding: Spacing.md, gap: 12, paddingBottom: 40 },
   warnBanner: {
     flexDirection: 'row', alignItems: 'flex-start', gap: 8,
-    backgroundColor: '#FFFBEB', borderRadius: Radius.md,
+    backgroundColor: Colors.warningLight, borderRadius: Radius.md,
     borderWidth: 1, borderColor: '#FDE68A', padding: 12,
   },
-  warnText: { fontSize: 13, color: '#92400E', flex: 1, lineHeight: 18 },
+  warnText: { fontSize: 13, color: Colors.warningText, flex: 1, lineHeight: 18 },
   headerCard: {
     backgroundColor: Colors.card, borderRadius: Radius.lg,
     borderWidth: 1, borderColor: Colors.border,
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   },
   typeBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#EFF6FF', borderRadius: Radius.full,
+    backgroundColor: Colors.primaryLight, borderRadius: Radius.full,
     paddingHorizontal: 10, paddingVertical: 3, marginBottom: 4,
   },
   typeBadgeText: { fontSize: 12, fontWeight: '700', color: '#0EA5E9' },
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   fullText: { fontSize: 12, color: Colors.textMuted, lineHeight: 20, marginTop: 8 },
   confirmedBanner: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
-    backgroundColor: '#F0FDF4', borderRadius: Radius.lg,
+    backgroundColor: Colors.successLight, borderRadius: Radius.lg,
     borderWidth: 1, borderColor: '#BBF7D0', padding: 14, justifyContent: 'center',
   },
   confirmedText: { fontSize: 15, fontWeight: '700', color: '#10B981' },

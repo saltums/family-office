@@ -12,7 +12,7 @@ import { getAuthStore } from '@/lib/authStore'
 import {
   MONEY_EVENT_TYPES, MONEY_EVENT_NEEDS_RETURN, MoneyEventType,
 } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 function toDateStr(d: Date) {
   return d.toISOString().slice(0, 10)
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: Colors.border, borderRadius: Radius.full,
     paddingHorizontal: 12, paddingVertical: 5,
   },
-  chipActive: { backgroundColor: Colors.primary + '18', borderColor: Colors.primary },
+  chipActive: { backgroundColor: tint(Colors.primary, '18'), borderColor: Colors.primary },
   chipText: { fontSize: 13, fontWeight: '600', color: Colors.textMuted },
   chipTextActive: { color: Colors.primary },
   switchRow: { flexDirection: 'row', alignItems: 'center' },

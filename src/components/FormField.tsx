@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native'
+import { Colors } from '@/lib/theme'
 
 interface Props extends TextInputProps {
   label: string
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: Colors.text,
     marginBottom: 6,
   },
   required: {
@@ -39,17 +40,17 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: Colors.border,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
-    color: '#111827',
-    backgroundColor: '#fff',
+    color: Colors.text,
+    backgroundColor: Colors.card,
   },
   hint: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     marginTop: 4,
   },
 })

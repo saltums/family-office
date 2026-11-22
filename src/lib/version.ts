@@ -1,5 +1,5 @@
-export const APP_VERSION = '0.9.90'
-export const RELEASE_DATE = '2026-11-18'
+export const APP_VERSION = '0.9.91'
+export const RELEASE_DATE = '2026-11-22'
 
 export interface ChangelogEntry {
   version: string
@@ -9,6 +9,16 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '0.9.91',
+    date: '2026-11-22',
+    time: '',
+    changes: [
+      'Web版にダークモードを追加：22:00〜6:00は自動で暗い配色になります',
+      'ダッシュボード：暗くなる時間帯を22:00〜6:00に変更。予定・TODO・買い物は5分ごと、天気は30分ごとに自動更新（スリープから戻ったときはすぐ更新）',
+      'Web版のダッシュボード：新しい版が公開されたら自動で読み込み直します（10分ごとに確認、夜中の3時台にも1回）',
+    ],
+  },
   {
     version: '0.9.90',
     date: '2026-11-18',

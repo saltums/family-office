@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { ExpirationRecord, CATEGORY_COLORS, daysUntilExpiration, formatDate, expirationLabel } from '@/lib/types'
+import { tint, Colors } from '@/lib/theme'
 
 interface Props {
   record: ExpirationRecord
@@ -43,11 +44,11 @@ export function RecordCard({ record, onPress, onDelete }: Props) {
       <TouchableOpacity style={styles.body} onPress={onPress} activeOpacity={0.7}>
         <View style={styles.top}>
           <View style={styles.badges}>
-            <View style={[styles.badge, { backgroundColor: categoryColor + '22' }]}>
+            <View style={[styles.badge, { backgroundColor: tint(categoryColor, '22') }]}>
               <Text style={[styles.badgeText, { color: categoryColor }]}>{record.category}</Text>
             </View>
             {record.owner && (
-              <View style={[styles.badge, { backgroundColor: (OWNER_COLORS[record.owner] ?? '#6B7280') + '22' }]}>
+              <View style={[styles.badge, { backgroundColor: tint(OWNER_COLORS[record.owner] ?? '#6B7280', '22') }]}>
                 <Text style={[styles.badgeText, { color: OWNER_COLORS[record.owner] ?? '#6B7280' }]}>{record.owner}</Text>
               </View>
             )}
@@ -84,7 +85,7 @@ export function RecordCard({ record, onPress, onDelete }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.card,
     borderRadius: 12,
     marginHorizontal: 16,
     marginVertical: 6,
@@ -108,10 +109,10 @@ const styles = StyleSheet.create({
   badge: { borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2 },
   badgeText: { fontSize: 11, fontWeight: '600' },
   days: { fontSize: 13, fontWeight: '700' },
-  name: { fontSize: 16, fontWeight: '600', color: '#111827', marginBottom: 2 },
-  date: { fontSize: 12, color: '#6B7280', marginTop: 1 },
-  amount: { fontSize: 13, color: '#374151', marginTop: 2 },
-  contact: { fontSize: 12, color: '#9CA3AF', marginTop: 2 },
+  name: { fontSize: 16, fontWeight: '600', color: Colors.text, marginBottom: 2 },
+  date: { fontSize: 12, color: Colors.textSecondary, marginTop: 1 },
+  amount: { fontSize: 13, color: Colors.textSecondary, marginTop: 2 },
+  contact: { fontSize: 12, color: Colors.textMuted, marginTop: 2 },
   actions: { flexDirection: 'column', alignItems: 'center', paddingRight: 8, gap: 8 },
   actionBtn: { padding: 8 },
 })

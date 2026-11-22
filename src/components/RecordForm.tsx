@@ -25,7 +25,7 @@ import {
   CATEGORIES, CATEGORY_COLORS, TASK_TYPES, TASK_TYPE_COLORS, TASK_TYPE_ICONS,
   hasStartDate, expirationLabel, startDateLabel,
 } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 const ALL_CATEGORIES: Category[] = ['タスク', ...CATEGORIES]
 
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: Radius.full,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: Colors.surface,
   },
   chipText: { fontSize: 14, fontWeight: '600' },
   taskTypeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
@@ -444,12 +444,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     borderRadius: Radius.md,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: 'transparent',
   },
-  ownerChipSelected: { backgroundColor: Colors.primary + '18', borderColor: Colors.primary },
+  ownerChipSelected: { backgroundColor: tint(Colors.primary, '18'), borderColor: Colors.primary },
   ownerText: { fontSize: 15, fontWeight: '600', color: Colors.textSecondary },
   ownerTextSelected: { color: Colors.primary },
   dateTrigger: {

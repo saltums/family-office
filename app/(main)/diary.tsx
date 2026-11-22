@@ -21,7 +21,7 @@ import { supabase } from '@/lib/supabase'
 import { appendImageFile } from '@/lib/formFile'
 import { useAuthStore } from '@/hooks/useAuthStore'
 import { DiaryEntry, PhotoEntry } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 
 const DAYS = ['日', '月', '火', '水', '木', '金', '土']
@@ -428,9 +428,9 @@ const styles = StyleSheet.create({
   thumbnail: { width: 44, height: 44, borderRadius: Radius.sm, overflow: 'hidden' },
   thumbnailPlaceholder: { backgroundColor: Colors.border, alignItems: 'center', justifyContent: 'center' },
   addPhotoBtn: {
-    backgroundColor: Colors.primary + '22',
+    backgroundColor: tint(Colors.primary, '22'),
     borderWidth: 1,
-    borderColor: Colors.primary + '66',
+    borderColor: tint(Colors.primary, '66'),
     alignItems: 'center',
     justifyContent: 'center',
   },

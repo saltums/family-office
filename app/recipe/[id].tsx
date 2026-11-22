@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { Recipe, RECIPE_CATEGORIES, RECIPE_CATEGORY_COLORS, RecipeCategory } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -153,7 +153,7 @@ export default function RecipeDetailScreen() {
                     return (
                       <TouchableOpacity
                         key={cat}
-                        style={[styles.chip, active && { backgroundColor: color + '22', borderColor: color }]}
+                        style={[styles.chip, active && { backgroundColor: tint(color, '22'), borderColor: color }]}
                         onPress={() => setCategory(cat)}
                       >
                         <Text style={[styles.chipText, active && { color }]}>{cat}</Text>
@@ -204,12 +204,12 @@ export default function RecipeDetailScreen() {
               {/* ヘッダーカード */}
               <View style={styles.mainCard}>
                 <View style={styles.mainCardHeader}>
-                  <View style={[styles.recipeIcon, { backgroundColor: catColor + '18' }]}>
+                  <View style={[styles.recipeIcon, { backgroundColor: tint(catColor, '18') }]}>
                     <Ionicons name="restaurant-outline" size={22} color={catColor} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.recipeTitle}>{recipe.title}</Text>
-                    <View style={[styles.catBadge, { backgroundColor: catColor + '18' }]}>
+                    <View style={[styles.catBadge, { backgroundColor: tint(catColor, '18') }]}>
                       <Text style={[styles.catBadgeText, { color: catColor }]}>{recipe.category}</Text>
                     </View>
                   </View>

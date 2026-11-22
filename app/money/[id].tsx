@@ -11,7 +11,7 @@ import { supabase } from '@/lib/supabase'
 import {
   MONEY_EVENT_TYPES, MONEY_EVENT_NEEDS_RETURN, MoneyEventType, MoneyRecord,
 } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 function toDateStr(d: Date) { return d.toISOString().slice(0, 10) }
 function displayDate(d: Date) {
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
   recordReturnBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingVertical: 10, paddingHorizontal: 14,
-    backgroundColor: Colors.primary + '12', borderRadius: Radius.md,
+    backgroundColor: tint(Colors.primary, '12'), borderRadius: Radius.md,
     marginTop: 4,
   },
   recordReturnBtnText: { fontSize: 14, fontWeight: '700', color: Colors.primary },
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: Colors.border, borderRadius: Radius.full,
     paddingHorizontal: 12, paddingVertical: 5,
   },
-  chipActive: { backgroundColor: Colors.primary + '18', borderColor: Colors.primary },
+  chipActive: { backgroundColor: tint(Colors.primary, '18'), borderColor: Colors.primary },
   chipText: { fontSize: 13, fontWeight: '600', color: Colors.textMuted },
   chipTextActive: { color: Colors.primary },
   switchRow: { flexDirection: 'row', alignItems: 'center' },

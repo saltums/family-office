@@ -22,7 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { supabase } from '@/lib/supabase'
 import { readAuthCache, writeAuthCache, readDeviceHid } from '@/lib/authCache'
 import { getAuthStore } from '@/lib/authStore'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { APP_VERSION } from '@/lib/version'
 
 export default function NewDiaryScreen() {
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
   tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 10 },
   tag: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: Colors.primary + '18', borderRadius: Radius.full,
+    backgroundColor: tint(Colors.primary, '18'), borderRadius: Radius.full,
     paddingHorizontal: 12, paddingVertical: 5,
   },
   tagText: { fontSize: 13, color: Colors.primary, fontWeight: '600' },

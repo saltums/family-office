@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { useSwitchViewMode } from '@/components/ModeSwitch'
 
 const MENU_ITEMS = [
@@ -53,7 +53,7 @@ export default function OtherScreen() {
             onPress={item.onPress ?? (() => switchMode('dashboard'))}
             activeOpacity={0.7}
           >
-            <View style={[styles.icon, { backgroundColor: item.color + '18' }]}>
+            <View style={[styles.icon, { backgroundColor: tint(item.color, '18') }]}>
               <Ionicons name={item.icon} size={22} color={item.color} />
             </View>
             <View style={styles.rowBody}>

@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/hooks/useAuthStore'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { WebMoreButton } from '@/components/WebMoreButton'
 
 // 8桁入力 → YYYY-MM-DD に正規化
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: Colors.border,
   },
   itemMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
-  catBadge: { backgroundColor: Colors.primary + '18', borderRadius: 4, paddingHorizontal: 8, paddingVertical: 2 },
+  catBadge: { backgroundColor: tint(Colors.primary, '18'), borderRadius: 4, paddingHorizontal: 8, paddingVertical: 2 },
   catBadgeText: { fontSize: 11, fontWeight: '700', color: Colors.primary },
   sourceBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: Colors.border, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
   sourceBadgeText: { fontSize: 11, color: Colors.textMuted },
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   fieldTextarea: { minHeight: 120 },
   catRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   catChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.bg },
-  catChipActive: { borderColor: Colors.primary, backgroundColor: Colors.primary + '15' },
+  catChipActive: { borderColor: Colors.primary, backgroundColor: tint(Colors.primary, '15') },
   catChipText: { fontSize: 14, color: Colors.textSecondary, fontWeight: '600' },
   catChipTextActive: { color: Colors.primary },
   optionChip: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, borderWidth: 1.5, borderColor: Colors.border, backgroundColor: Colors.bg },

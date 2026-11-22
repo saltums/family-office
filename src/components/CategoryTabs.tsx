@@ -1,6 +1,7 @@
 import React from 'react'
 import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Category, CATEGORIES } from '@/lib/types'
+import { Colors } from '@/lib/theme'
 
 type Tab = 'すべて' | Category
 
@@ -41,14 +42,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 20,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: Colors.surface,
   },
   tabSelected: {
     backgroundColor: '#3B82F6',
   },
   label: {
     fontSize: 14,
-    color: '#6B7280',
+    color: Colors.textSecondary,
     fontWeight: '500',
   },
   labelSelected: {

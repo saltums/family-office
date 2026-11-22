@@ -235,7 +235,7 @@ export default function DocumentsScreen() {
                         onPress={() => router.push(`/document/${doc.id}` as any)}
                         activeOpacity={0.7}
                       >
-                        <View style={[styles.daysBadge, { backgroundColor: urgent ? '#FEF2F2' : '#FFFBEB' }]}>
+                        <View style={[styles.daysBadge, { backgroundColor: urgent ? Colors.dangerLight : Colors.warningLight }]}>
                           <Text style={[styles.daysNum, { color: urgent ? '#EF4444' : '#F59E0B' }]}>
                             {days <= 0 ? '今日' : `${days}日`}
                           </Text>
@@ -389,17 +389,17 @@ export default function DocumentsScreen() {
                         <Text style={styles.listTitle} numberOfLines={1}>{item.name}</Text>
                       </View>
                       {!item.is_folder && item.ocr_status === 'pending' && (
-                        <View style={[styles.fileBadge, { backgroundColor: '#F3F4F6' }]}>
+                        <View style={[styles.fileBadge, { backgroundColor: Colors.surface }]}>
                           <Text style={[styles.fileBadgeText, { color: Colors.textMuted }]}>待ち</Text>
                         </View>
                       )}
                       {!item.is_folder && item.ocr_status === 'error' && (
-                        <View style={[styles.fileBadge, { backgroundColor: '#FEF2F2' }]}>
+                        <View style={[styles.fileBadge, { backgroundColor: Colors.dangerLight }]}>
                           <Text style={[styles.fileBadgeText, { color: '#EF4444' }]}>失敗</Text>
                         </View>
                       )}
                       {!item.is_folder && item.ocr_status === 'done' && (
-                        <View style={[styles.fileBadge, { backgroundColor: '#F0FDF4' }]}>
+                        <View style={[styles.fileBadge, { backgroundColor: Colors.successLight }]}>
                           <Text style={[styles.fileBadgeText, { color: '#10B981' }]}>済</Text>
                         </View>
                       )}

@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { useHousehold } from '@/hooks/useHousehold'
 import { MoneyRecord } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type Filter = 'all' | 'received' | 'given' | 'return_pending'
 
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: Colors.border, borderRadius: Radius.full,
     paddingHorizontal: 14, paddingVertical: 5, height: 32, justifyContent: 'center',
   },
-  filterChipActive: { backgroundColor: Colors.primary + '18', borderColor: Colors.primary },
+  filterChipActive: { backgroundColor: tint(Colors.primary, '18'), borderColor: Colors.primary },
   filterChipText: { fontSize: 13, fontWeight: '600', color: Colors.textMuted },
   filterChipTextActive: { color: Colors.primary },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },

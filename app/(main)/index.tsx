@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useHousehold } from '@/hooks/useHousehold'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { ModeSwitch } from '@/components/ModeSwitch'
 
 interface MenuItem {
@@ -56,7 +56,7 @@ export default function HomeScreen() {
               onPress={() => router.push(item.route as any)}
               activeOpacity={0.75}
             >
-              <View style={[styles.iconCircle, { backgroundColor: item.color + '18' }]}>
+              <View style={[styles.iconCircle, { backgroundColor: tint(item.color, '18') }]}>
                 <Ionicons name={item.icon} size={30} color={item.color} />
               </View>
               <Text style={styles.cellLabel}>{item.label}</Text>

@@ -10,7 +10,7 @@ import { router } from 'expo-router'
 import Voice from '@/lib/voice'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/hooks/useAuthStore'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type KnowledgeItem = {
   id: string
@@ -312,7 +312,7 @@ export default function MemoriesScreen() {
             <View style={styles.savedBannerHeader}>
               <Text style={styles.savedBannerTitle}>✅ 覚えました！</Text>
               <TouchableOpacity onPress={() => setLastSaved(null)} hitSlop={8}>
-                <Ionicons name="close" size={16} color="#065F46" />
+                <Ionicons name="close" size={16} color={Colors.successText} />
               </TouchableOpacity>
             </View>
             {lastSaved.map((s, i) => (
@@ -355,7 +355,7 @@ export default function MemoriesScreen() {
               <TouchableOpacity activeOpacity={0.7} onPress={() => openDetail(item)}>
                 <View style={styles.card}>
                   <View style={styles.cardHeader}>
-                    <View style={[styles.categoryBadge, { backgroundColor: (CATEGORY_COLOR[item.category] ?? '#8B5CF6') + '18' }]}>
+                    <View style={[styles.categoryBadge, { backgroundColor: tint(CATEGORY_COLOR[item.category] ?? '#8B5CF6', '18') }]}>
                       <Text style={[styles.categoryText, { color: CATEGORY_COLOR[item.category] ?? '#8B5CF6' }]}>
                         {CATEGORY_LABEL[item.category] ?? '📌 その他'}
                       </Text>
@@ -400,7 +400,7 @@ export default function MemoriesScreen() {
 
               {/* ヘッダー */}
               <View style={styles.modalHeader}>
-                <View style={[styles.categoryBadge, { backgroundColor: (CATEGORY_COLOR[selectedItem?.category ?? 'other']) + '18' }]}>
+                <View style={[styles.categoryBadge, { backgroundColor: tint(CATEGORY_COLOR[selectedItem?.category ?? 'other'], '18') }]}>
                   <Text style={[styles.categoryText, { color: CATEGORY_COLOR[selectedItem?.category ?? 'other'] }]}>
                     {CATEGORY_LABEL[selectedItem?.category ?? 'other']}
                   </Text>
@@ -542,13 +542,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8, paddingVertical: 2,
   },
   savedBanner: {
-    backgroundColor: '#D1FAE5', borderLeftWidth: 4, borderLeftColor: '#10B981',
+    backgroundColor: Colors.successSoft, borderLeftWidth: 4, borderLeftColor: '#10B981',
     marginHorizontal: Spacing.md, marginVertical: 8, padding: Spacing.md,
     borderRadius: Radius.md, gap: 6,
   },
   savedBannerHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  savedBannerTitle: { fontSize: 14, fontWeight: '700', color: '#065F46' },
-  savedBannerItem: { fontSize: 13, color: '#065F46', lineHeight: 20 },
+  savedBannerTitle: { fontSize: 14, fontWeight: '700', color: Colors.successText },
+  savedBannerItem: { fontSize: 13, color: Colors.successText, lineHeight: 20 },
   // モーダル
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
   modalSheet: {
@@ -574,10 +574,10 @@ const styles = StyleSheet.create({
   existingLabel: { fontSize: 11, fontWeight: '700', color: Colors.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
   existingContent: { fontSize: 15, color: Colors.text, lineHeight: 22 },
   detailSavedBanner: {
-    backgroundColor: '#D1FAE5', borderRadius: Radius.md,
+    backgroundColor: Colors.successSoft, borderRadius: Radius.md,
     padding: 10, marginBottom: Spacing.md, alignItems: 'center',
   },
-  detailSavedText: { fontSize: 14, fontWeight: '700', color: '#065F46' },
+  detailSavedText: { fontSize: 14, fontWeight: '700', color: Colors.successText },
   detailInputSection: { gap: 10, marginBottom: Spacing.md },
   detailInputLabel: { fontSize: 13, fontWeight: '700', color: Colors.text },
   detailInputRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-end' },

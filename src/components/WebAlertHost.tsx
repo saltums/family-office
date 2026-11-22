@@ -3,6 +3,7 @@
 // 小さなダイアログ(モーダル)で出す。既存の Alert.alert 呼び出しはそのまま動く。
 import React, { useEffect, useState } from 'react'
 import { Alert, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Colors } from '@/lib/theme'
 
 type Btn = { text?: string; style?: 'default' | 'cancel' | 'destructive'; onPress?: (value?: string) => void }
 type Req = { title: string; message?: string; buttons: Btn[]; cancelable: boolean }
@@ -80,16 +81,16 @@ export function WebAlertHost() {
 
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', alignItems: 'center', justifyContent: 'center', padding: 16 },
-  box: { backgroundColor: '#fff', borderRadius: 14, padding: 20, width: '100%', maxWidth: 360 },
-  title: { fontSize: 17, fontWeight: '700', color: '#111827', marginBottom: 6 },
+  box: { backgroundColor: Colors.card, borderRadius: 14, padding: 20, width: '100%', maxWidth: 360 },
+  title: { fontSize: 17, fontWeight: '700', color: Colors.text, marginBottom: 6 },
   message: { fontSize: 14, color: '#4B5563', lineHeight: 20, marginBottom: 4 },
   btnRow: { flexDirection: 'row', justifyContent: 'flex-end', gap: 8, marginTop: 16 },
   btnCol: { flexDirection: 'column', alignItems: 'stretch' },
-  btn: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 8, backgroundColor: '#EEF2FF' },
+  btn: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 8, backgroundColor: Colors.primaryLight },
   btnFull: { alignItems: 'center' },
-  btnCancel: { backgroundColor: '#F3F4F6' },
+  btnCancel: { backgroundColor: Colors.surface },
   btnHover: { opacity: 0.8 },
   btnText: { fontSize: 15, fontWeight: '600', color: '#4F8EF7' },
   btnDanger: { color: '#EF4444' },
-  btnCancelText: { color: '#6B7280' },
+  btnCancelText: { color: Colors.textSecondary },
 })

@@ -19,7 +19,7 @@ import { useHousehold } from '@/hooks/useHousehold'
 import { RecordCard } from '@/components/RecordCard'
 import { CategoryTabs } from '@/components/CategoryTabs'
 import { ExpirationRecord, Card, PasswordEntry, Category, daysUntilExpiration } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type Tab = 'すべて' | Category
 type Section = '期限' | '銀行' | 'カード' | 'パスワード' | '家族' | '金銭'
@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 6, paddingVertical: 8, borderRadius: Radius.md,
   },
-  sectionBtnActive: { backgroundColor: Colors.primary + '18' },
+  sectionBtnActive: { backgroundColor: tint(Colors.primary, '18') },
   sectionBtnText: { fontSize: 13, fontWeight: '600', color: Colors.textMuted },
   sectionBtnTextActive: { color: Colors.primary },
   badge: {
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.md, marginBottom: Spacing.sm,
     borderRadius: Radius.md, paddingHorizontal: 12, paddingVertical: 10, gap: 8,
   },
-  bannerText: { fontSize: 13, color: '#92400E', flex: 1 },
+  bannerText: { fontSize: 13, color: Colors.warningText, flex: 1 },
   bannerCount: { fontWeight: '700' },
   list: { paddingBottom: 100 },
   listEmpty: { flexGrow: 1 },
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
   },
   cardIcon: {
     width: 40, height: 40, borderRadius: Radius.md,
-    backgroundColor: Colors.primary + '18', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: tint(Colors.primary, '18'), alignItems: 'center', justifyContent: 'center',
   },
   cardBody: { flex: 1 },
   cardName: { fontSize: 15, fontWeight: '700', color: Colors.text },
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
   cardMemo: { fontSize: 12, color: Colors.textMuted, marginTop: 2 },
   cardNameRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
   ownerBadge: {
-    backgroundColor: Colors.primary + '20', borderRadius: Radius.full,
+    backgroundColor: tint(Colors.primary, '20'), borderRadius: Radius.full,
     paddingHorizontal: 8, paddingVertical: 2,
   },
   ownerBadgeText: { fontSize: 11, fontWeight: '700', color: Colors.primary },

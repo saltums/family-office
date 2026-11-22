@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams, router } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/hooks/useAuthStore'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 import { WebMoreButton } from '@/components/WebMoreButton'
 
 interface FamilyMember {
@@ -230,7 +230,7 @@ export default function FamilyDetailScreen() {
                     activeOpacity={0.85}
                   >
                     <View style={styles.eventCardTop}>
-                      <View style={[styles.categoryBadge, { backgroundColor: cat.color + '20' }]}>
+                      <View style={[styles.categoryBadge, { backgroundColor: tint(cat.color, '20') }]}>
                         <Text style={[styles.categoryText, { color: cat.color }]}>{evt.category}</Text>
                       </View>
                       <View style={{ flex: 1 }} />
@@ -282,7 +282,7 @@ export default function FamilyDetailScreen() {
                 {CATEGORIES.map(cat => (
                   <TouchableOpacity
                     key={cat.key}
-                    style={[styles.catChip, newCategory === cat.key && { backgroundColor: cat.color + '25', borderColor: cat.color }]}
+                    style={[styles.catChip, newCategory === cat.key && { backgroundColor: tint(cat.color, '25'), borderColor: cat.color }]}
                     onPress={() => setNewCategory(cat.key as CategoryKey)}
                   >
                     <Ionicons name={cat.icon as any} size={16} color={newCategory === cat.key ? cat.color : Colors.textMuted} />
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: Colors.primary + '18',
+    backgroundColor: tint(Colors.primary, '18'),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   name: { fontSize: 22, fontWeight: '800', color: Colors.text },
   relationTag: {
     alignSelf: 'flex-start',
-    backgroundColor: Colors.primary + '18',
+    backgroundColor: tint(Colors.primary, '18'),
     borderRadius: Radius.sm,
     paddingHorizontal: 8,
     paddingVertical: 3,

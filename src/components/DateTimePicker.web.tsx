@@ -43,11 +43,11 @@ export default function DateTimePicker({ value, onChange, minimumDate, maximumDa
         fontSize: 16,
         padding: '10px 12px',
         margin: '8px 0',
-        border: '1px solid #D1D5DB',
+        border: '1px solid var(--fo-border)',
         borderRadius: 10,
         fontFamily: 'inherit',
-        color: '#111827',
-        background: '#fff',
+        color: 'var(--fo-text)',
+        background: 'var(--fo-card)',
       }}
     />
   )

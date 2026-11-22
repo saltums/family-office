@@ -18,7 +18,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import Voice from '@/lib/voice'
 import { supabase } from '@/lib/supabase'
 import { readAuthCache, writeAuthCache } from '@/lib/authCache'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 type SourceItem = { type: 'diary'; date: string; excerpt?: string } | { type: 'record'; name: string }
 
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, paddingTop: 40 },
   emptyIcon: {
     width: 64, height: 64, borderRadius: 32,
-    backgroundColor: Colors.primary + '18', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
+    backgroundColor: tint(Colors.primary, '18'), alignItems: 'center', justifyContent: 'center', marginBottom: 16,
   },
   emptyTitle: { fontSize: 18, fontWeight: '800', color: Colors.text, marginBottom: 8 },
   emptyBody: { fontSize: 14, color: Colors.textMuted, textAlign: 'center', lineHeight: 20, marginBottom: 24 },

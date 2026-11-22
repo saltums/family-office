@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { useHousehold } from '@/hooks/useHousehold'
 import { Recipe, RECIPE_CATEGORIES, RECIPE_CATEGORY_COLORS } from '@/lib/types'
-import { Colors, Radius, Spacing } from '@/lib/theme'
+import { Colors, Radius, Spacing, tint } from '@/lib/theme'
 
 export default function RecipesScreen() {
   const { userId } = useAuth()
@@ -67,7 +67,7 @@ export default function RecipesScreen() {
                 return (
                   <TouchableOpacity
                     key={cat}
-                    style={[styles.filterChip, isActive && { backgroundColor: (color ?? Colors.primary) + '22', borderColor: color ?? Colors.primary }]}
+                    style={[styles.filterChip, isActive && { backgroundColor: tint(color ?? Colors.primary, '22'), borderColor: color ?? Colors.primary }]}
                     onPress={() => setCategoryFilter(cat === 'すべて' ? '' : cat)}
                   >
                     <Text style={[styles.filterChipText, isActive && { color: color ?? Colors.primary }]}>{cat}</Text>
@@ -94,13 +94,13 @@ export default function RecipesScreen() {
                     onPress={() => router.push(`/recipe/${recipe.id}` as any)}
                     activeOpacity={0.7}
                   >
-                    <View style={[styles.rowIcon, { backgroundColor: catColor + '18' }]}>
+                    <View style={[styles.rowIcon, { backgroundColor: tint(catColor, '18') }]}>
                       <Ionicons name="restaurant-outline" size={20} color={catColor} />
                     </View>
                     <View style={styles.rowBody}>
                       <Text style={styles.rowTitle} numberOfLines={1}>{recipe.title}</Text>
                       <View style={styles.rowMeta}>
-                        <View style={[styles.catBadge, { backgroundColor: catColor + '18' }]}>
+                        <View style={[styles.catBadge, { backgroundColor: tint(catColor, '18') }]}>
                           <Text style={[styles.catBadgeText, { color: catColor }]}>{recipe.category}</Text>
                         </View>
                         {recipe.url ? (
