@@ -49,10 +49,10 @@ function garbageFor(s: GarbageSchedule | null, d: Date): string[] {
 function shortGarbage(name: string) { return name.replace(/\(.*\)/, '') }
 
 // ---------- 天気 ----------
-function weatherInfo(code: number): { label: string; icon: any } {
-  if (code === 0) return { label: '快晴', icon: 'sunny' }
-  if (code === 1) return { label: '晴れ', icon: 'sunny-outline' }
-  if (code === 2) return { label: '晴れ時々くもり', icon: 'partly-sunny-outline' }
+function weatherInfo(code: number, night = false): { label: string; icon: any } {
+  if (code === 0) return { label: '快晴', icon: night ? 'moon' : 'sunny' }
+  if (code === 1) return { label: '晴れ', icon: night ? 'moon-outline' : 'sunny-outline' }
+  if (code === 2) return { label: '晴れ時々くもり', icon: night ? 'cloudy-night-outline' : 'partly-sunny-outline' }
   if (code === 3) return { label: 'くもり', icon: 'cloudy-outline' }
   if (code === 45 || code === 48) return { label: '霧', icon: 'cloudy-outline' }
   if (code >= 51 && code <= 57) return { label: '霧雨', icon: 'rainy-outline' }
@@ -66,18 +66,29 @@ function weatherInfo(code: number): { label: string; icon: any } {
 type Weather = {
   temp: number; code: number
   days: { date: string; code: number; max: number; min: number; pop: number }[]
-  hours: { hour: number; pop: number; temp: number }[]
+  // これから24時間(3時間ごと8つ)
+  hours: { hour: number; nextDay: boolean; pop: number; temp: number; code: number }[]
 }
 async function fetchWeather(h: Home): Promise<Weather> {
   const u = `https://api.open-meteo.com/v1/forecast?latitude=${h.lat}&longitude=${h.lon}` +
-    `&current=temperature_2m,weather_code&hourly=precipitation_probability,temperature_2m` +
+    `&current=temperature_2m,weather_code&hourly=precipitation_probability,temperature_2m,weather_code` +
     `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
     `&timezone=Asia%2FTokyo&forecast_days=3`
   const w = await (await fetch(u)).json()
-  const nowH = new Date().getHours()
-  const hours = (w.hourly.time as string[]).map((t, i) => ({
-    t, hour: Number(t.slice(11, 13)), pop: w.hourly.precipitation_probability[i], temp: w.hourly.temperature_2m[i],
-  })).filter((x, i) => i >= nowH && i < nowH + 12 && i % 3 === nowH % 3)
+  // いまの時刻(日本時間)から24時間分を、3時間ごとに取り出す
+  const times = w.hourly.time as string[]
+  const nowStr = w.current.time as string // 例: 2026-11-22T18:15
+  let start = times.findIndex(t => t.slice(0, 13) === nowStr.slice(0, 13))
+  if (start < 0) start = 0
+  const hours: Weather['hours'] = []
+  for (let k = 0; k < 24; k += 3) {
+    const i = start + k
+    if (i >= times.length) break
+    hours.push({
+      hour: Number(times[i].slice(11, 13)), nextDay: times[i].slice(0, 10) !== nowStr.slice(0, 10),
+      pop: w.hourly.precipitation_probability[i] ?? 0, temp: w.hourly.temperature_2m[i], code: w.hourly.weather_code[i],
+    })
+  }
   return {
     temp: w.current.temperature_2m, code: w.current.weather_code,
     days: (w.daily.time as string[]).map((date, i) => ({
@@ -311,7 +322,7 @@ export default function DashboardScreen() {
     </View>
   )
 
-  const wi = weather ? weatherInfo(weather.code) : null
+  const wi = weather ? weatherInfo(weather.code, now.getHours() >= 18 || now.getHours() < 6) : null
   const todayW = weather?.days[0]
 
   return (
@@ -354,19 +365,26 @@ export default function DashboardScreen() {
                   <Text style={s.sub}>☂ {todayW.pop}%</Text>
                 </View>
               </View>
+              {/* これから24時間(3時間ごと) */}
               <View style={s.hours}>
-                {weather.hours.map(h => (
-                  <View key={h.hour} style={s.hour}>
-                    <Text style={s.hourT}>{h.hour}時</Text>
+                {weather.hours.map((h, i) => (
+                  <View key={i} style={s.hour}>
+                    <Text numberOfLines={1} style={[s.hourT, h.nextDay && { color: c.accent }]}>
+                      {i === 0 ? '今' : `${h.nextDay && !weather.hours[i - 1].nextDay ? '明' : ''}${h.hour}時`}
+                    </Text>
+                    <Ionicons name={weatherInfo(h.code, h.hour >= 18 || h.hour < 6).icon} size={20} color={c.sub} />
                     <Text style={s.hourV}>{Math.round(h.temp)}°</Text>
                     <Text style={[s.hourP, h.pop >= 50 && { color: c.accent, fontWeight: '700' }]}>{h.pop}%</Text>
                   </View>
                 ))}
+              </View>
+              {/* 明日・明後日 */}
+              <View style={s.days}>
                 {weather.days.slice(1).map(d => (
-                  <View key={d.date} style={[s.hour, { borderLeftWidth: 1, borderLeftColor: c.border }]}>
+                  <View key={d.date} style={s.dayItem}>
                     <Text style={s.hourT}>{md(d.date)}({wdOf(d.date)})</Text>
                     <Ionicons name={weatherInfo(d.code).icon} size={18} color={c.sub} />
-                    <Text style={s.hourP}>{Math.round(d.max)}°/{Math.round(d.min)}°</Text>
+                    <Text style={s.hourP}>{Math.round(d.max)}°/{Math.round(d.min)}° ☂{d.pop}%</Text>
                   </View>
                 ))}
               </View>
@@ -496,8 +514,10 @@ function makeStyles(c: ReturnType<typeof palette>, wide: boolean) {
     weatherCard: { flex: wide ? 1.4 : undefined },
     weatherNow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
     temp: { color: c.text, fontWeight: '700' },
-    hours: { flexDirection: 'row', marginTop: 12, flexWrap: 'wrap' },
-    hour: { alignItems: 'center', paddingHorizontal: 8, paddingVertical: 2, minWidth: 56, gap: 2 },
+    hours: { flexDirection: 'row', marginTop: 12 },
+    hour: { flex: 1, alignItems: 'center', paddingVertical: 2, gap: 2 },
+    days: { flexDirection: 'row', marginTop: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: c.border, gap: 16 },
+    dayItem: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
     hourT: { color: c.sub, fontSize: 12 },
     hourV: { color: c.text, fontSize: 15, fontWeight: '600' },
     hourP: { color: c.sub, fontSize: 12 },

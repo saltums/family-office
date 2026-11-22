@@ -1,4 +1,4 @@
-export const APP_VERSION = '0.9.91'
+export const APP_VERSION = '0.9.92'
 export const RELEASE_DATE = '2026-11-22'
 
 export interface ChangelogEntry {
@@ -9,6 +9,12 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '0.9.92',
+    date: '2026-11-22',
+    time: '',
+    changes: ['ダッシュボード：天気を「これから24時間」の表示に（3時間ごと、天気のアイコン・気温・降水確率つき。夜は月のアイコン）'],
+  },
   {
     version: '0.9.91',
     date: '2026-11-22',
